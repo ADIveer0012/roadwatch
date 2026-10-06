@@ -48,7 +48,7 @@ function render(){
   ({report:renderForm,mine:v=>renderList(v,reports.filter(r=>r.by===user.uid),false),all:v=>renderList(v,reports,false),map:renderMap,admin:renderAdmin}[tab]||renderForm)(v);
 }
 function renderAuth(v){
-  v.innerHTML=`<div class="card"><b>Login or create an account</b>
+  v.innerHTML=`<div class="hero"><h1>Help fix the roads around you.</h1><p>Sign in to report potholes and follow each repair until it is fixed.</p></div><div class="card"><b class="ct">Sign in to report</b>
   <label>Email</label><input id="em" type="email"><label>Password (min 6 chars)</label><input id="pw" type="password">
   <div class="row" style="margin-top:12px"><button class="p" id="li">Login</button><button id="su">Sign up</button></div>
   ${authMsg?`<div class="msg err">${esc(authMsg)}</div>`:''}</div>`;
@@ -56,7 +56,7 @@ function renderAuth(v){
   $('#li').onclick=go(signInWithEmailAndPassword);$('#su').onclick=go(createUserWithEmailAndPassword);
 }
 function renderForm(v){
-  v.innerHTML=`<div class="card"><b>Report a pothole</b>
+  v.innerHTML=`<div class="hero"><h1>See a pothole? Report it in a minute.</h1><p>Add a photo and the exact spot. Your report goes straight to the admin who tracks repairs.</p></div><div class="card"><b class="ct">Report a pothole</b>
   <label>1. Take or choose a photo</label><input type="file" id="f" accept="image/*" capture="environment">
   ${form.url?`<img class="ph" src="${form.url}">`:''}
   <label>2. Location</label><div class="row"><input id="lat" placeholder="Latitude" value="${esc(form.lat)}"><input id="lng" placeholder="Longitude" value="${esc(form.lng)}"></div>
@@ -144,14 +144,14 @@ async function submit(){
 }
 
 function card(r,admin){
-  return `<div class="card"><span class="tag ${r.severity}">${esc(r.severity)}</span> <b>${esc(r.status)}</b>${r.votes?` · +${r.votes} duplicate reports`:''}${r.dupOf?' · duplicate':''}${r.ai==='verified'?' · ✅ AI verified':''}
+  return `<div class="card rep sev${r.severity}"><span class="tag ${r.severity}">${esc(r.severity)} severity</span> <b class="chip s${r.status.replace(' ','')}">${esc(r.status)}</b>${r.votes?` · +${r.votes} duplicate reports`:''}${r.dupOf?' · duplicate':''}${r.ai==='verified'?' · ✅ AI verified':''}
   <img class="ph" src="${esc(r.photo)}" loading="lazy">
   <div class="mu" style="margin-top:6px">${new Date(r.ts).toLocaleString()} · <a href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=18/${r.lat}/${r.lng}" target="_blank" rel="noopener">${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</a></div>
   ${r.desc?`<div>${esc(r.desc)}</div>`:''}
   ${admin?`<div class="row" style="margin-top:8px"><select data-id="${r.id}" class="st">${['Pending','In Progress','Fixed'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select></div>`:''}</div>`;
 }
 function renderList(v,list,admin){
-  v.innerHTML=list.length?list.map(r=>card(r,admin)).join(''):'<div class="msg">No reports yet.</div>';
+  v.innerHTML=list.length?list.map(r=>card(r,admin)).join(''):'<div class="empty"><div>🛣️</div><b>No reports here yet</b><span>Reports will show up on this screen as soon as they are submitted.</span></div>';
   v.querySelectorAll('.st').forEach(s=>s.onchange=()=>updateDoc(doc(db,'reports',s.dataset.id),{status:s.value}).catch(()=>toast('Update failed')));
 }
 function renderMap(v){
