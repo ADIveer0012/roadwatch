@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /reports/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.by == request.auth.uid
+        && request.resource.data.status == 'Pending'
+        && request.resource.data.photo.size() < 900000;
+      allow update: if request.auth != null && (
+        request.auth.token.email == 'admin@example.com' ||   // <-- your admin email
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']));
+      allow delete: if request.auth != null && request.auth.token.email == 'admin@example.com';
+    }
+  }
+}

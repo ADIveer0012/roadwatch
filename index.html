@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoadWatch – Pothole Reporter</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/lite.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head><body>
+<header><span>🚧 RoadWatch</span><button id="out" hidden>Logout</button></header>
+<main>
+  <nav id="nav" hidden>
+    <button data-t="report" class="on">Report</button>
+    <button data-t="mine">My reports</button>
+    <button data-t="map">Map</button>
+    <button data-t="all">All</button>
+    <button data-t="admin" id="adminTab" hidden>Admin</button>
+  </nav>
+  <div id="view"></div>
+</main>
+<div id="toast"></div>
+<script type="module" src="app.js"></script>
+</body></html>
